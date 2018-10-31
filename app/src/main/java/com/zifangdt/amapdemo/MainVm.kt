@@ -11,6 +11,8 @@ import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.route.*
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainVm(app: Application) : AndroidViewModel(app) {
 
@@ -29,6 +31,9 @@ class MainVm(app: Application) : AndroidViewModel(app) {
         aMap.isMyLocationEnabled = true;// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setOnMyLocationChangeListener {
             LogUtils.d("zfdt===${it.longitude},${it.latitude}")
+            GlobalScope.launch {
+
+            }
         }
     }
 
@@ -53,8 +58,7 @@ class MainVm(app: Application) : AndroidViewModel(app) {
                 if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
                     if (result != null && result.paths != null) {
                         if (result.paths.size > 0) {
-                            val drivePath = result.paths
-                                .get(0) ?: return
+                            val drivePath = result.paths[0] ?: return
                             val drivingRouteOverlay = DrivingRouteOverlay(
                                 context, aMap, drivePath,
                                 result.startPos,
