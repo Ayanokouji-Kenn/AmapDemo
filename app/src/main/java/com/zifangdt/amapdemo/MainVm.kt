@@ -4,6 +4,8 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import com.amap.api.maps.AMap
+import com.amap.api.maps.AMapUtils
+import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.MyLocationStyle
 import com.amap.api.maps.model.MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER
 import com.amap.api.services.core.AMapException
@@ -29,14 +31,26 @@ class MainVm(app: Application) : AndroidViewModel(app) {
         //设置定位蓝点的Style
         aMap.uiSettings.isMyLocationButtonEnabled = true//;设置默认定位按钮是否显示，非必需设置。
         aMap.isMyLocationEnabled = true;// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
-        aMap.setOnMyLocationChangeListener {
-            LogUtils.d("zfdt===${it.longitude},${it.latitude}")
+        aMap.setOnMyLocationChangeListener { location ->
+            LogUtils.d("zfdt===${location.longitude},${location.latitude}")
             GlobalScope.launch {
+                mDrivePath?.steps?.forEach {
+                    it.polyline.forEach {
+                        val distance = AMapUtils.calculateLineDistance(
+                            LatLng(it.latitude, it.longitude),
+                            LatLng(location.latitude, location.longitude)
+                        )
+                        if (distance > 100) {
+                            //todo 发警报
+                        }
+                    }
+                }
 
             }
         }
     }
 
+    private var mDrivePath: DrivePath? = null
     private val mStartPoint = LatLonPoint(31.26, 120.731458)//起点，39.942295,116.335891
     private val mEndPoint = LatLonPoint(31.3, 120.764)//终点，39.995576,116.481288
     private val wayToPointList = mutableListOf<LatLonPoint>().apply {
@@ -59,6 +73,7 @@ class MainVm(app: Application) : AndroidViewModel(app) {
                     if (result != null && result.paths != null) {
                         if (result.paths.size > 0) {
                             val drivePath = result.paths[0] ?: return
+                            mDrivePath = drivePath
                             val drivingRouteOverlay = DrivingRouteOverlay(
                                 context, aMap, drivePath,
                                 result.startPos,
