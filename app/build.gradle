@@ -37,9 +37,16 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'com.amap.api:3dmap:5.2.0'
-    implementation 'com.amap.api:map2d:5.2.0'
-//    implementation 'com.amap.api:location:4.3.0'
+//    3D地图
+    implementation 'com.amap.api:3dmap:6.5.0'
+//    2D地图
+//    implementation 'com.amap.api:map2d:latest.integration'
+//    导航
+//    implementation 'com.amap.api:navi-3dmap:latest.integration'
+//    搜索
+    implementation 'com.amap.api:search:6.5.0.1'
+//    定位
+//    implementation 'com.amap.api:location:latest.integration'
 
     def lifecycle_version = "1.1.1"
     // ViewModel and LiveData

@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         vm = ViewModelProviders.of(this).get(MainVm::class.java)
         map.onCreate(savedInstanceState)
         vm.initMyLocation(map.map)
-
+        vm.calcRoute(this,map.map)
     }
 
 
